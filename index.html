@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artem Selyuk — Blockchain & Web3 Lawyer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & VARS ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:         #040B14;
+  --bg2:        #070F1C;
+  --surface:    #0C1829;
+  --surface2:   #101E30;
+  --border:     #1A2D45;
+  --border2:    #243D5A;
+  --cyan:       #00D4FF;
+  --cyan-dim:   #0099BB;
+  --gold:       #F5C842;
+  --gold-dim:   #C49E2A;
+  --text:       #E8EFF7;
+  --text-dim:   #7A9BB8;
+  --text-muted: #3D5F7F;
+  --accent-r:   #FF4D6D;
+  --r: 255; --g: 212; --b: 0; /* not used but leaving as reference */
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── CANVAS BACKGROUND ────────────────────────────────────────────── */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── LAYOUT ───────────────────────────────────────────────────────── */
+.shell {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ── HERO ─────────────────────────────────────────────────────────── */
+.hero {
+  padding: 80px 0 60px;
+  position: relative;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--cyan);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  background: rgba(0,212,255,.07);
+  border: 1px solid rgba(0,212,255,.2);
+  border-radius: 2px;
+  padding: 5px 12px;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp .6s .1s ease forwards;
+}
+
+.hero-tag::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: .3; }
+}
+
+.hero-name {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(48px, 8vw, 82px);
+  font-weight: 800;
+  line-height: .95;
+  letter-spacing: -.02em;
+  color: var(--text);
+  opacity: 0;
+  animation: fadeUp .7s .2s ease forwards;
+}
+
+.hero-name span {
+  display: block;
+  background: linear-gradient(90deg, #00D4FF 0%, #7B6EF6 50%, #F5C842 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-title {
+  margin-top: 20px;
+  font-size: 17px;
+  font-weight: 300;
+  color: var(--text-dim);
+  letter-spacing: .01em;
+  opacity: 0;
+  animation: fadeUp .7s .35s ease forwards;
+}
+
+.hero-title strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 28px;
+  opacity: 0;
+  animation: fadeUp .7s .5s ease forwards;
+}
+
+.pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .08em;
+  padding: 5px 13px;
+  border-radius: 2px;
+  border: 1px solid var(--border2);
+  color: var(--text-dim);
+  background: var(--surface);
+  transition: all .25s;
+  cursor: default;
+}
+
+.pill:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: rgba(0,212,255,.05);
+  transform: translateY(-1px);
+}
+
+.pill.gold {
+  border-color: rgba(245,200,66,.3);
+  color: var(--gold-dim);
+  background: rgba(245,200,66,.04);
+}
+
+.pill.gold:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(245,200,66,.08);
+}
+
+/* ── CONTACT BAR ──────────────────────────────────────────────────── */
+.contact-bar {
+  margin-top: 40px;
+  padding: 18px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+  opacity: 0;
+  animation: fadeUp .7s .65s ease forwards;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-bar::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--cyan), var(--gold));
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.contact-item a {
+  color: var(--cyan);
+  text-decoration: none;
+  transition: opacity .2s;
+}
+.contact-item a:hover { opacity: .7; }
+
+.contact-icon {
+  font-size: 14px;
+  opacity: .7;
+}
+
+/* ── SECTION ──────────────────────────────────────────────────────── */
+.section {
+  margin-top: 64px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.section-label-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border2) 0%, transparent 100%);
+}
+
+.section-number {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--cyan);
+  opacity: .5;
+}
+
+/* ── SUMMARY ──────────────────────────────────────────────────────── */
+.summary-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 28px 32px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text-dim);
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: .4;
+}
+
+.summary-card strong { color: var(--text); font-weight: 500; }
+.summary-highlight {
+  color: var(--cyan);
+  font-weight: 500;
+}
+
+/* ── EXPERIENCE ───────────────────────────────────────────────────── */
+.exp-item {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 48px;
+}
+
+.exp-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 10px; bottom: -24px;
+  width: 1px;
+  background: linear-gradient(180deg, var(--cyan) 0%, var(--border) 100%);
+}
+
+.exp-item:last-child::before { display: none; }
+
+.exp-dot {
+  position: absolute;
+  left: -4px; top: 8px;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--cyan);
+  box-shadow: 0 0 10px rgba(0,212,255,.5);
+}
+
+.exp-meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.exp-role {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.exp-org {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cyan);
+  margin-top: 2px;
+}
+
+.exp-org a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.exp-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  font-family: 'DM Mono', monospace;
+}
+
+.exp-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--surface2);
+  flex-shrink: 0;
+}
+
+.exp-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.exp-bullets li {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.65;
+  padding-left: 18px;
+  position: relative;
+}
+
+.exp-bullets li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--cyan);
+  font-weight: 700;
+}
+
+.exp-bullets li strong { color: var(--text); font-weight: 500; }
+
+/* ── EDUCATION ────────────────────────────────────────────────────── */
+.edu-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 24px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .3s;
+}
+
+.edu-card:hover { border-color: var(--border2); }
+
+.edu-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  opacity: .3;
+}
+
+.edu-degree {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.edu-school {
+  font-size: 13px;
+  color: var(--gold-dim);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.edu-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.edu-year {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--surface2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── CERTIFICATIONS ───────────────────────────────────────────────── */
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.cert-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 18px 20px;
+  transition: all .3s;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+}
+
+.cert-card:hover {
+  border-color: var(--cyan);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0,0,0,.4), 0 0 0 1px rgba(0,212,255,.1);
+}
+
+.cert-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cyan), #7B6EF6);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .35s ease;
+}
+
+.cert-card:hover::before { transform: scaleX(1); }
+
+.cert-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.cert-provider {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: .06em;
+}
+
+.cert-year {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--cyan);
+  margin-top: 10px;
+  opacity: .7;
+}
+
+/* ── EXPERTISE GRID ───────────────────────────────────────────────── */
+.expertise-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.expertise-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 22px 24px;
+  transition: all .3s;
+}
+
+.expertise-card:hover {
+  border-color: var(--border2);
+  background: var(--surface2);
+}
+
+.expertise-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: .04em;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.expertise-title .dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 6px var(--cyan);
+  flex-shrink: 0;
+}
+
+.expertise-items {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.expertise-item {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  padding-left: 12px;
+  position: relative;
+}
+
+.expertise-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px;
+  width: 4px; height: 1px;
+  background: var(--border2);
+}
+
+/* ── LANGUAGES ────────────────────────────────────────────────────── */
+.lang-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.lang-card {
+  flex: 1;
+  min-width: 140px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px 24px;
+  transition: all .3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.lang-card:hover { border-color: var(--border2); }
+
+.lang-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.lang-level {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: .08em;
+}
+
+.lang-bar-wrap {
+  margin-top: 14px;
+  height: 2px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.lang-bar {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--cyan), #7B6EF6);
+  width: 0;
+  transition: width 1.2s ease;
+}
+
+.lang-card.visible .lang-bar { width: var(--pct); }
+
+/* ── FOOTER ───────────────────────────────────────────────────────── */
+.footer {
+  margin-top: 80px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-left {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.footer-availability {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--cyan);
+  letter-spacing: .06em;
+}
+
+.footer-availability::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #00FF88;
+  box-shadow: 0 0 8px #00FF88;
+  animation: pulse 2s infinite;
+}
+
+/* ── ANIMATIONS ───────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SCROLLBAR ────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── PRINT ────────────────────────────────────────────────────────── */
+@media print {
+  #bg-canvas { display: none; }
+  body { background: white; color: #111; }
+  .section { opacity: 1 !important; transform: none !important; }
+}
+
+/* ── MOBILE ───────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .shell { padding: 0 16px 60px; }
+  .hero { padding: 48px 0 40px; }
+  .contact-bar { gap: 14px; }
+  .cert-grid { grid-template-columns: 1fr 1fr; }
+  .expertise-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="shell">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-tag">Blockchain · Web3 · AI Law</div>
+
+    <h1 class="hero-name">
+      Artem<br><span>Selyuk</span>
+    </h1>
+
+    <p class="hero-title">
+      <strong>Blockchain & Web3 Lawyer</strong> &ensp;·&ensp;
+      Crypto Token Law &ensp;·&ensp; DeFi Compliance &ensp;·&ensp; AI Regulation
+    </p>
+
+    <div class="hero-pills">
+      <span class="pill">MiCA · EU</span>
+      <span class="pill">AI Act</span>
+      <span class="pill">VARA · UAE</span>
+      <span class="pill">MAS · SG</span>
+      <span class="pill">FINMA · CH</span>
+      <span class="pill">FATF AML/KYC</span>
+      <span class="pill gold">Solidity · EVM</span>
+      <span class="pill gold">Smart Contracts</span>
+      <span class="pill gold">DeFi · DAO Law</span>
+    </div>
+
+    <div class="contact-bar">
+      <div class="contact-item">
+        <span class="contact-icon">📍</span>
+        <span>Gomel, Belarus</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">🔗</span>
+        <a href="https://t.me/lex_crypto_ai" target="_blank">t.me/lex_crypto_ai</a>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">🌍</span>
+        <span>Open to Remote · Relocation · Travel</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">✉️</span>
+        <a href="mailto:artem.xsice@gmail.com">artem.xsice@gmail.com</a>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">✈️</span>
+        <a href="https://t.me/xsice" target="_blank">@xsice</a>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">⚖️</span>
+        <span>Remote · Full-time · Part-time · Project</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- SUMMARY -->
+  <section class="section">
+    <div class="section-label">
+      <span class="section-number">01</span>
+      <span class="section-label-text">Profile</span>
+    </div>
+
+    <div class="summary-card">
+      Blockchain lawyer with a law degree in <strong>Law</strong> and hands-on technical grounding in smart contract development (Solidity, EVM). Focused on the legal infrastructure of Web3: <span class="summary-highlight">token structuring, DeFi governance frameworks, DAO legal wrappers, and cross-jurisdictional crypto compliance</span>. Founder of <strong>Lex Crypto & AI</strong> — an independent research initiative producing practical regulatory analysis across EU (MiCA, AI Act), Switzerland, UAE (ADGM/VARA), and Singapore. Actively building the technical depth — Solidity, blockchain, smart contract auditing — that separates a Web3 lawyer from a traditional one.
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="section">
+    <div class="section-label">
+      <span class="section-number">02</span>
+      <span class="section-label-text">Experience</span>
+    </div>
+
+    <!-- Lex Crypto & AI -->
+    <div class="exp-item">
+      <div class="exp-dot"></div>
+      <div class="exp-meta">
+        <div>
+          <div class="exp-role">Founder &amp; Independent Legal Researcher</div>
+          <div class="exp-org"><a href="https://t.me/lex_crypto_ai" target="_blank">Lex Crypto &amp; AI ↗</a></div>
+          <div class="exp-sub">Self-initiated · Remote</div>
+        </div>
+        <div class="exp-date">2025 — Present</div>
+      </div>
+      <ul class="exp-bullets">
+        <li>Built a <strong>public legal research platform</strong> covering Web3 and AI regulation — producing applied framework analyses for token models, smart contract governance, and DAO legal structures.</li>
+        <li>Mapped regulatory requirements across <strong>EU (MiCA, AI Act), Switzerland (FINMA), UAE (ADGM/VARA), and Singapore (MAS)</strong> for practical use in international crypto projects.</li>
+        <li>Developed compliance frameworks for DeFi protocols: token classification (utility vs. security), <strong>cross-border AML/KYC obligations</strong> under FATF recommendations, and DAO legal wrapper design.</li>
+        <li>Analyzed landmark enforcement actions by <strong>SEC, CFTC, and ESMA</strong> — extracted compliance patterns applicable to early-stage Web3 ventures and token issuers.</li>
+        <li>Produced jurisdiction-specific regulatory breakdowns consumed by legal practitioners and Web3 founders navigating cross-border compliance.</li>
+      </ul>
+    </div>
+
+    <!-- Bar Association -->
+    <div class="exp-item">
+      <div class="exp-dot" style="border-color: var(--gold); box-shadow: 0 0 10px rgba(245,200,66,.4);"></div>
+      <div class="exp-meta">
+        <div>
+          <div class="exp-role">Advocate Intern</div>
+          <div class="exp-org" style="color: var(--gold-dim);">Gomel Regional Bar Association</div>
+          <div class="exp-sub">Full-time · On-site · Belarus</div>
+        </div>
+        <div class="exp-date">Aug 2025 — Present</div>
+      </div>
+      <ul class="exp-bullets">
+        <li>Drafted procedural documents — <strong>statements of claim, complaints, petitions</strong> — for civil, administrative, and criminal proceedings.</li>
+        <li>Conducted legal research across civil, housing, family, and labor law to produce client-facing advisory opinions.</li>
+        <li>Gained direct exposure to <strong>dispute resolution mechanics, client counseling</strong>, and formal legal argumentation in active cases.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section class="section">
+    <div class="section-label">
+      <span class="section-number">03</span>
+      <span class="section-label-text">Education</span>
+    </div>
+
+    <div class="edu-card">
+      <div>
+        <div class="edu-degree">LL.B. — Legal Support of Business</div>
+        <div class="edu-school">Polotsk State University</div>
+        <div class="edu-sub">Faculty of Law · Novopolotsk, Belarus</div>
+      </div>
+      <div class="edu-year">2021 – 2025</div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <section class="section">
+    <div class="section-label">
+      <span class="section-number">04</span>
+      <span class="section-label-text">Technical Certifications</span>
+    </div>
+
+    <div class="cert-grid">
+      <div class="cert-card">
+        <div class="cert-name">Solidity Smart Contract Development</div>
+        <div class="cert-provider">Cyfrin Updraft</div>
+        <div class="cert-year">2026</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-name">Chainlink Fundamentals</div>
+        <div class="cert-provider">Cyfrin Updraft</div>
+        <div class="cert-year">2026</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-name">Blockchain Basics</div>
+        <div class="cert-provider">Cyfrin Updraft</div>
+        <div class="cert-year">2026</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-name">Web3 &amp; Blockchain Fundamentals</div>
+        <div class="cert-provider">INSEAD</div>
+        <div class="cert-year">2025</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERTISE -->
+  <section class="section">
+    <div class="section-label">
+      <span class="section-number">05</span>
+      <span class="section-label-text">Areas of Expertise</span>
+    </div>
+
+    <div class="expertise-grid">
+      <div class="expertise-card">
+        <div class="expertise-title"><span class="dot"></span>Crypto &amp; Token Law</div>
+        <div class="expertise-items">
+          <div class="expertise-item">Token classification (utility / security / payment)</div>
+          <div class="expertise-item">MiCA (EU) · FINMA (CH) · MAS (SG)</div>
+          <div class="expertise-item">VARA (UAE) · SEC / CFTC frameworks</div>
+          <div class="expertise-item">ICO / TGE legal structuring</div>
+        </div>
+      </div>
+
+      <div class="expertise-card">
+        <div class="expertise-title"><span class="dot" style="background:#7B6EF6;box-shadow:0 0 6px #7B6EF6;"></span>DeFi &amp; Blockchain Law</div>
+        <div class="expertise-items">
+          <div class="expertise-item">DAO governance &amp; legal wrappers</div>
+          <div class="expertise-item">DeFi protocol compliance</div>
+          <div class="expertise-item">Smart contract legal analysis</div>
+          <div class="expertise-item">AML/KYC in DeFi · FATF</div>
+        </div>
+      </div>
+
+      <div class="expertise-card">
+        <div class="expertise-title"><span class="dot" style="background:var(--gold);box-shadow:0 0 6px var(--gold);"></span>AI Regulation &amp; Ethics</div>
+        <div class="expertise-items">
+          <div class="expertise-item">EU AI Act compliance</div>
+          <div class="expertise-item">AI liability frameworks</div>
+          <div class="expertise-item">Algorithmic bias &amp; ethics</div>
+          <div class="expertise-item">AI governance structures</div>
+        </div>
+      </div>
+
+      <div class="expertise-card">
+        <div class="expertise-title"><span class="dot" style="background:#FF4D6D;box-shadow:0 0 6px #FF4D6D;"></span>Cybersecurity &amp; Privacy</div>
+        <div class="expertise-items">
+          <div class="expertise-item">GDPR · NIS2 · SOC 2</div>
+          <div class="expertise-item">Data protection law</div>
+          <div class="expertise-item">Cybersecurity compliance</div>
+          <div class="expertise-item">Digital forensics law</div>
+        </div>
+      </div>
+
+      <div class="expertise-card">
+        <div class="expertise-title"><span class="dot" style="background:#00FF88;box-shadow:0 0 6px #00FF88;"></span>Technical &amp; On-Chain</div>
+        <div class="expertise-items">
+          <div class="expertise-item">Solidity · EVM</div>
+          <div class="expertise-item">Smart contract review</div>
+          <div class="expertise-item">Chainlink · Oracles</div>
+          <div class="expertise-item">On-chain transaction analysis</div>
+        </div>
+      </div>
+
+      <div class="expertise-card">
+        <div class="expertise-title"><span class="dot" style="background:#F5A623;box-shadow:0 0 6px #F5A623;"></span>Core Legal Skills</div>
+        <div class="expertise-items">
+          <div class="expertise-item">Legal research &amp; analysis</div>
+          <div class="expertise-item">Contract drafting &amp; review</div>
+          <div class="expertise-item">Regulatory compliance advisory</div>
+          <div class="expertise-item">International law · Arbitration</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANGUAGES -->
+  <section class="section">
+    <div class="section-label">
+      <span class="section-number">06</span>
+      <span class="section-label-text">Languages</span>
+    </div>
+
+    <div class="lang-row">
+      <div class="lang-card" style="--pct: 100%">
+        <div class="lang-name">Russian</div>
+        <div class="lang-level">NATIVE</div>
+        <div class="lang-bar-wrap"><div class="lang-bar"></div></div>
+      </div>
+      <div class="lang-card" style="--pct: 22%">
+        <div class="lang-name">German</div>
+        <div class="lang-level">A2 · ELEMENTARY</div>
+        <div class="lang-bar-wrap"><div class="lang-bar" style="background: linear-gradient(90deg, var(--gold), #E88A2F);"></div></div>
+      </div>
+      <div class="lang-card" style="--pct: 55%">
+        <div class="lang-name">English</div>
+        <div class="lang-level">B1 → ACTIVELY IMPROVING</div>
+        <div class="lang-bar-wrap"><div class="lang-bar" style="background: linear-gradient(90deg, #7B6EF6, #A855F7);"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer section">
+    <div class="footer-left">
+      Artem Selyuk · Blockchain &amp; Web3 Lawyer · Updated March 2026
+    </div>
+    <div class="footer-availability">Open to global opportunities</div>
+  </footer>
+
+</div><!-- /shell -->
+
+<script>
+/* ── CANVAS: animated node graph ─────────────────────────────────── */
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, nodes, animId;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function makeNodes(n) {
+    return Array.from({length: n}, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - .5) * .25,
+      vy: (Math.random() - .5) * .25,
+      r: Math.random() * 1.5 + .5,
+    }));
+  }
+
+  function step() {
+    ctx.clearRect(0, 0, W, H);
+
+    // subtle grid
+    ctx.strokeStyle = 'rgba(26,45,69,.28)';
+    ctx.lineWidth = .5;
+    const gSize = 80;
+    for (let x = 0; x < W; x += gSize) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    }
+    for (let y = 0; y < H; y += gSize) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+
+    // move nodes
+    nodes.forEach(n => {
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > W) n.vx *= -1;
+      if (n.y < 0 || n.y > H) n.vy *= -1;
+    });
+
+    // edges
+    const DIST = 160;
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[i].x - nodes[j].x;
+        const dy = nodes[i].y - nodes[j].y;
+        const d  = Math.sqrt(dx*dx + dy*dy);
+        if (d < DIST) {
+          const alpha = (1 - d/DIST) * .12;
+          ctx.strokeStyle = `rgba(0,212,255,${alpha})`;
+          ctx.lineWidth = .6;
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // dots
+    nodes.forEach(n => {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(0,212,255,.35)';
+      ctx.fill();
+    });
+
+    animId = requestAnimationFrame(step);
+  }
+
+  resize();
+  nodes = makeNodes(55);
+  step();
+
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(animId);
+    resize();
+    nodes = makeNodes(55);
+    step();
+  });
+})();
+
+/* ── SCROLL REVEAL ────────────────────────────────────────────────── */
+(function() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+
+        // language bars
+        e.target.querySelectorAll('.lang-card').forEach(card => {
+          card.classList.add('visible');
+        });
+
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.section').forEach(s => obs.observe(s));
+})();
+
+/* ── CERT CARD SHIMMER on hover ──────────────────────────────────── */
+document.querySelectorAll('.cert-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width  - .5) * 18;
+    const y = ((e.clientY - rect.top)  / rect.height - .5) * 18;
+    card.style.transform = `perspective(600px) rotateY(${x}deg) rotateX(${-y}deg) translateY(-3px)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+    card.style.transition = 'transform .4s ease';
+    setTimeout(() => card.style.transition = '', 400);
+  });
+});
+</script>
+</body>
+</html>
